@@ -3,33 +3,26 @@ using UnityEngine.Events;
 
 public class MouseDragger : MonoBehaviour
 {
-    public enum DragDirection {
-        Up,
-        Down,
-        Left,
-        Right,
-        LeftUpper,
-        RightUpper,
-        LeftLower,
-        RightLower
-    }
-
-    [SerializeField, Range(0, 1f)] float moveErrorFactor = 0.01f;
-    private float MoveError {
+    [SerializeField, Range(0, 1f)] float moveThresholdFactor = 0.01f;
+    private float moveThreshold;
+    private float MoveThreshold {
         get {
             Resolution resolution = Screen.currentResolution;
-            return (new Vector2(resolution.width, resolution.height).magnitude * moveErrorFactor);
+            return (new Vector2(resolution.width, resolution.height).magnitude * moveThresholdFactor);
         }
     }
 
-    [SerializeField] UnityEvent<DragDirection> onDraggedEvent;
+    [SerializeField] UnityEvent<Vector2> onDraggedEvent;
 
-    private Vector2 startPosition;
+    private Vector3 startPosition;
     private bool isClicked = false;
 
     private void Awake()
     {
-        Debug.Log(MoveError);
+        Resolution resolution = Screen.currentResolution;
+        moveThreshold = (new Vector2(resolution.width, resolution.height).magnitude * moveThresholdFactor);
+
+        Debug.Log(moveThreshold);
     }
 
     private void Update()
@@ -40,9 +33,17 @@ public class MouseDragger : MonoBehaviour
             startPosition = Input.mousePosition;
         }
 
+        if(Input.GetMouseButtonUp(0))
+            isClicked = false;
+
         if (isClicked == false)
             return;
-        
-        // if()
+
+        Vector3 error = Input.mousePosition - startPosition;
+        if(error.sqrMagnitude > MoveThreshold * MoveThreshold)
+        {
+            startPosition = Input.mousePosition;
+            onDraggedEvent?.Invoke(error.normalized);
+        }
     }
 }

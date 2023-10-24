@@ -21,7 +21,7 @@ public class MagneticTable<T, U> where T : IComparable<T>
 
     public void RegisterTable(int hash, T left, T right, U value)
     {
-        if(right.CompareTo(left) > 0)
+        if(left.CompareTo(right) > 0)
         {
             T temp = left;
             left = right;

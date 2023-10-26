@@ -1,20 +1,13 @@
 using UnityEngine;
 
-public class TestBall : MonoBehaviour
+public class BallController : MonoBehaviour
 {
     [SerializeField] float moveSpeed = 10f;
-    
+
     private Vector3 destination;
-    private bool isStopped = true;
+    private bool isStopped = false;
 
     private MagneticTable<float, Vector3> directionTable = new MagneticTable<float, Vector3>();
-
-    // 0 ~ 67.5 => 45
-    // 67.5 ~ 112.5 => 90
-    // 112.5 ~ 180 => 135
-    // 180 ~ 247.5 => 225
-    // 247.5 ~ 292.5 => 270
-    // 292.5 ~ 360 => 315
 
     private void Awake()
     {
@@ -39,7 +32,7 @@ public class TestBall : MonoBehaviour
         transform.Translate(dir * moveSpeed * Time.deltaTime);
     }
 
-    public void SetDestination(Vector2 dir)
+	public void SetDestination(Vector2 dir)
     {
         if(isStopped == false)
             return;
